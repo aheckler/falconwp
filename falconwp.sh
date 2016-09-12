@@ -16,8 +16,8 @@ MYSQL_USERNAME=${SITE_NAME}
 MYSQL_PASSWORD=$(head /dev/urandom | tr -cd a-zA-Z0-9 | head -c 20)
 
 # Valet settings
-VALET_DOMAIN=$(cat .valet/config.json | jq -r '.domain')
-VALET_DIRECTORY=$(cat .valet/config.json | jq -r '.paths[0]')
+VALET_DOMAIN=$(cat ~/.valet/config.json | jq -r '.domain')
+VALET_DIRECTORY=$(cat ~/.valet/config.json | jq -r '.paths[0]')
 
 # Formatting variables
 BOLD_START=$(tput bold)
