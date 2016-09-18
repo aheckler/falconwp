@@ -9,11 +9,11 @@ SITE_NAME=${1}
 
 # Set WordPress credentials
 WORDPRESS_USERNAME="wordpress"
-WORDPRESS_PASSWORD=$(head /dev/urandom | tr -cd a-zA-Z0-9 | head -c 20)
+WORDPRESS_PASSWORD=$(env LC_CTYPE=C tr -dc A-Za-z0-9 < /dev/urandom | head -c 20 | xargs)
 
 # Set database credentials
 MYSQL_USERNAME=${SITE_NAME}
-MYSQL_PASSWORD=$(head /dev/urandom | tr -cd a-zA-Z0-9 | head -c 20)
+MYSQL_PASSWORD=$(env LC_CTYPE=C tr -dc A-Za-z0-9 < /dev/urandom | head -c 20 | xargs)
 
 # Valet settings
 VALET_DOMAIN=$(cat ~/.valet/config.json | jq -r '.domain')
