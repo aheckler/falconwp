@@ -23,9 +23,6 @@ VALET_DIRECTORY=$(cat ~/.valet/config.json | jq -r '.paths[0]')
 BOLD_START=$(tput bold)
 BOLD_STOP=$(tput sgr0)
 
-# Set MySQL root password
-# MYSQL_ROOT_PW=$(<~/.mysql_root_pw)
-
 # Output a new message, section, or error
 function output_new() {
   if [[ "message" == ${1} ]]; then
