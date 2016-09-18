@@ -4,8 +4,9 @@ A shell script for creating local WordPress test sites.
 
 ## Requirements
 
-* Laravel Valet (including `mariadb`)
-* The `jq` package from Homebrew
+* [Laravel Valet](https://laravel.com/docs/5.3/valet) (including `mariadb`)
+* [WP-CLI](https://wp-cli.org/)
+* The `jq` package from [Homebrew](http://brew.sh/)
 
 ## Installation
 
