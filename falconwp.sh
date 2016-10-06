@@ -9,11 +9,11 @@ SITE_NAME=${1}
 
 # Set WordPress credentials
 WORDPRESS_USERNAME="wordpress"
-WORDPRESS_PASSWORD=$(head /dev/urandom | tr -cd a-zA-Z0-9 | head -c 20)
+WORDPRESS_PASSWORD=$(head /dev/urandom | LC_ALL=C tr -cd a-zA-Z0-9 | cut -c1-20)
 
 # Set database credentials
 MYSQL_USERNAME=${SITE_NAME}
-MYSQL_PASSWORD=$(head /dev/urandom | tr -cd a-zA-Z0-9 | head -c 20)
+MYSQL_PASSWORD=$(head /dev/urandom | LC_ALL=C tr -cd a-zA-Z0-9 | cut -c1-20)
 
 # Valet settings
 VALET_DOMAIN=$(cat ~/.valet/config.json | jq -r '.domain')
@@ -22,9 +22,6 @@ VALET_DIRECTORY=$(cat ~/.valet/config.json | jq -r '.paths[0]')
 # Formatting variables
 BOLD_START=$(tput bold)
 BOLD_STOP=$(tput sgr0)
-
-# Set MySQL root password
-# MYSQL_ROOT_PW=$(<~/.mysql_root_pw)
 
 # Output a new message, section, or error
 function output_new() {
