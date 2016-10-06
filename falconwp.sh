@@ -150,6 +150,22 @@ output_new message $? "Removing sample content"
 
 wp site empty --yes &> /dev/null
 
+read -p "    Would you like to open a public-facing tunnel (y/n) " USE_NGROK
+echo
+
+if [ "$USE_NGROK" == "y" ] || [ "$USE_NGROK" == "Y" ]; then
+	output_new message $? "Opening ngrok tunnel"
+	/Users/sstancil/src/falconwp/term.sh "cd ${VALET_DIRECTORY}/${SITE_NAME}; valet share"
+
+	sleep 3
+	output_new message $? "Retrieving ngrok URL"
+	URL=$(curl http://localhost:4040/api/tunnels 2>/dev/null | jq '.tunnels[] | select( .name == "command_line (http)" ) | .public_url' | sed 's/\"//g')
+
+	output_new message $? "Changing URL database settings"
+	echo "UPDATE wp_options SET option_value=\"${URL}\" WHERE option_name=\"siteurl\";" | mysql --database=${SITE_NAME} --user=root --password=${MYSQL_ROOT_PW} &> /dev/null
+	echo "UPDATE wp_options SET option_value=\"${URL}\" WHERE option_name=\"home\";" | mysql --database=${SITE_NAME} --user=root --password=${MYSQL_ROOT_PW} &> /dev/null
+fi
+
 output_new message $? "Opening the site"
 
 # Open in default browser, in background
