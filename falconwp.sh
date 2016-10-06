@@ -45,6 +45,21 @@ function output_new() {
   fi
 }
 
+# Get the directory of this script, for calling term.sh
+# -- From http://www.ostricher.com/2014/10/the-right-way-to-get-the-directory-of-a-bash-script/
+get_script_dir () {
+     SOURCE="${BASH_SOURCE[0]}"
+     # While $SOURCE is a symlink, resolve it
+     while [ -h "$SOURCE" ]; do
+          DIR="$( cd -P "$( dirname "$SOURCE" )" && pwd )"
+          SOURCE="$( readlink "$SOURCE" )"
+          # If $SOURCE was a relative symlink (so no "/" as prefix, need to resolve it relative to the symlink base directory
+          [[ $SOURCE != /* ]] && SOURCE="$DIR/$SOURCE"
+     done
+     DIR="$( cd -P "$( dirname "$SOURCE" )" && pwd )"
+     echo "$DIR"
+}
+
 # Only accept non-empty, alphanumeric site names.
 if [[ -z ${SITE_NAME} || ${SITE_NAME} =~ [^a-zA-Z0-9] ]]; then
   echo "ERROR: Enter an alphanumeric sitename please."
@@ -155,7 +170,7 @@ echo
 
 if [ "$USE_NGROK" == "y" ] || [ "$USE_NGROK" == "Y" ]; then
 	output_new message $? "Opening ngrok tunnel"
-	/Users/sstancil/src/falconwp/term.sh "cd ${VALET_DIRECTORY}/${SITE_NAME}; valet share"
+	$(get_script_dir)/term.sh "cd ${VALET_DIRECTORY}/${SITE_NAME}; valet share"
 
 	sleep 3
 	output_new message $? "Retrieving ngrok URL"
