@@ -4,7 +4,7 @@ A shell script for creating local WordPress test sites.
 
 ## Requirements
 
-* [Laravel Valet](https://laravel.com/docs/5.3/valet) (including `mariadb`)
+* [Laravel Valet](https://laravel.com/docs/5.8/valet) (including `mariadb`)
 * [WP-CLI](https://wp-cli.org/)
 * The `jq` package from [Homebrew](http://brew.sh/)
 
@@ -12,7 +12,7 @@ A shell script for creating local WordPress test sites.
 
 1. Clone the repo: `git clone https://github.com/aheckler/falconwp.git`
 2. Make the script executable: `chmod +x falconwp.sh`
-3. Use `brew services list` to ensure that `php70`, `mariadb`, and `dnsmasq` are running.
+3. Use `brew services list` to ensure that `php`, `mariadb`, and `dnsmasq` are running.
 4. Park a directory in Valet. I usually do `valet park ~/Sites`.
 
 ## Usage
