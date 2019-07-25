@@ -16,8 +16,8 @@ MYSQL_USERNAME=${SITE_NAME}
 MYSQL_PASSWORD=$(head /dev/urandom | LC_ALL=C tr -cd a-zA-Z0-9 | cut -c1-20)
 
 # Valet settings
-VALET_DOMAIN=$(cat ~/.valet/config.json | jq -r '.domain')
-VALET_DIRECTORY=$(cat ~/.valet/config.json | jq -r '.paths[0]')
+VALET_DOMAIN=$(cat ~/.config/valet/config.json | jq -r '.tld')
+VALET_DIRECTORY=$(cat ~/.config/valet/config.json | jq -r '.paths[0]')
 
 # Formatting variables
 BOLD_START=$(tput bold)
@@ -52,7 +52,7 @@ if [[ -z ${SITE_NAME} || ${SITE_NAME} =~ [^a-zA-Z0-9] ]]; then
 fi
 
 # Make sure Valet has at least one directory parked
-if [[ "null" == $(cat ~/.valet/config.json | jq -r '.paths[0]') ]]; then
+if [[ "null" == $(cat ~/.config/valet/config.json | jq -r '.paths[0]') ]]; then
   echo "ERROR: Please park at least one directory in Valet."
   exit 1;
 fi
