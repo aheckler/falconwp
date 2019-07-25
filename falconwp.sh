@@ -116,7 +116,7 @@ output_new section $? "Installing WordPress"
 
 output_new message $? "Creating site directory"
 
-cd $VALET_DIRECTORY &> /dev/null && mkdir ${SITE_NAME} &> /dev/null && cd ${SITE_NAME} &> /dev/null
+cd "$VALET_DIRECTORY" &> /dev/null && mkdir ${SITE_NAME} &> /dev/null && cd ${SITE_NAME} &> /dev/null
 
 output_new message $? "Downloading WordPress"
 
