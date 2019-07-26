@@ -12,12 +12,13 @@ A shell script for creating local WordPress test sites.
 
 1. Clone the repo: `git clone https://github.com/aheckler/falconwp.git`
 2. Make the script executable: `chmod +x falconwp.sh`
-3. Use `brew services list` to ensure that `php`, `mariadb`, and `dnsmasq` are running.
+3. Use `brew services list` to ensure that `dnsmasq`, `mariadb`, `nginx`, and `php` are running.
 4. Park a directory in Valet. I usually do `valet park ~/Sites`.
 
 ## Usage
 
-1. Run `sh falconwp.sh sitename`, where `sitename` is an alphanumeric string.
+1. Run `sh falconwp.sh`.
+2. Enter the root password for your local database when prompted.
 2. FalconWP will spin up a local WordPress site and open it in your browser.
 3. The WordPress admin credentials will be output in Terminal.
 
