@@ -5,7 +5,10 @@
 # See requirements here: https://github.com/aheckler/falconwp
 
 # Set site name
-SITE_NAME=${1}
+SITE_NAME=$(sed '/.\{10\}/d' /usr/share/dict/words | shuf -n 3 | tr '\n' '_' | tr [:upper:] [:lower:] | sed 's/.$//')
+
+# Create hyphenated site name for use in URLs, etc.
+SITE_NAME_HYPHENATED=$(echo ${SITE_NAME} | tr '_' '-')
 
 # Set WordPress credentials
 WORDPRESS_USERNAME="wordpress"
@@ -44,12 +47,6 @@ function output_new() {
     exit 1;
   fi
 }
-
-# Only accept non-empty, alphanumeric site names.
-if [[ -z ${SITE_NAME} || ${SITE_NAME} =~ [^a-zA-Z0-9] ]]; then
-  echo "ERROR: Enter an alphanumeric sitename please."
-  exit 1;
-fi
 
 # Make sure Valet has at least one directory parked
 if [[ "null" == $(cat ~/.config/valet/config.json | jq -r '.paths[0]') ]]; then
@@ -116,7 +113,7 @@ output_new section $? "Installing WordPress"
 
 output_new message $? "Creating site directory"
 
-cd "$VALET_DIRECTORY" &> /dev/null && mkdir ${SITE_NAME} &> /dev/null && cd ${SITE_NAME} &> /dev/null
+cd "$VALET_DIRECTORY" &> /dev/null && mkdir ${SITE_NAME_HYPHENATED} &> /dev/null && cd ${SITE_NAME_HYPHENATED} &> /dev/null
 
 output_new message $? "Downloading WordPress"
 
@@ -144,7 +141,7 @@ PHP
 
 output_new message $? "Installing WordPress"
 
-wp core install --url=${SITE_NAME}.${VALET_DOMAIN} --title=${SITE_NAME} --admin_user=${WORDPRESS_USERNAME} --admin_password=${WORDPRESS_PASSWORD} --admin_email=user@example.com &> /dev/null
+wp core install --url=${SITE_NAME_HYPHENATED}.${VALET_DOMAIN} --title=${SITE_NAME_HYPHENATED} --admin_user=${WORDPRESS_USERNAME} --admin_password=${WORDPRESS_PASSWORD} --admin_email=user@example.com &> /dev/null
 
 output_new message $? "Removing sample content"
 
@@ -153,8 +150,8 @@ wp site empty --yes &> /dev/null
 output_new message $? "Opening the site"
 
 # Open in default browser, in background
-open -g http://${SITE_NAME}.${VALET_DOMAIN}/
-open -g http://${SITE_NAME}.${VALET_DOMAIN}/wp-admin
+open -g http://${SITE_NAME_HYPHENATED}.${VALET_DOMAIN}/
+open -g http://${SITE_NAME_HYPHENATED}.${VALET_DOMAIN}/wp-admin
 
 #######################################
 output_new section $? "WordPress credentials:"
