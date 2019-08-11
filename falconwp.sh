@@ -150,6 +150,7 @@ wp site empty --yes &> /dev/null
 output_new message $? "Opening the site"
 
 # Open in default browser, in background
+# Foreground for Chrome due to: https://crbug.com/854609
 open -g http://${SITE_NAME_HYPHENATED}.${VALET_DOMAIN}/
 open -g http://${SITE_NAME_HYPHENATED}.${VALET_DOMAIN}/wp-admin
 
@@ -157,9 +158,13 @@ open -g http://${SITE_NAME_HYPHENATED}.${VALET_DOMAIN}/wp-admin
 output_new section $? "WordPress credentials:"
 #######################################
 
+# Copy password to clipboard
+echo ${WORDPRESS_PASSWORD} | pbcopy
+
 echo
 output_new message $? "Username: ${WORDPRESS_USERNAME}"
 output_new message $? "Password: ${WORDPRESS_PASSWORD}"
+output_new message $? "Password copied to clipboard."
 echo
 
 exit 0;
