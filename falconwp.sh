@@ -15,8 +15,8 @@ WORDPRESS_USERNAME="wordpress"
 WORDPRESS_PASSWORD=$(head /dev/urandom | LC_ALL=C tr -cd a-zA-Z0-9 | cut -c1-20)
 
 # Set database credentials
-MYSQL_USERNAME=${SITE_NAME}
-MYSQL_PASSWORD=$(head /dev/urandom | LC_ALL=C tr -cd a-zA-Z0-9 | cut -c1-20)
+MARIADB_USERNAME=${SITE_NAME}
+MARIADB_PASSWORD=$(head /dev/urandom | LC_ALL=C tr -cd a-zA-Z0-9 | cut -c1-20)
 
 # Valet settings
 VALET_DOMAIN=$(cat ~/.config/valet/config.json | jq -r '.tld')
@@ -69,13 +69,13 @@ output_new message $? "MariaDB is running"
 
 mysql.server start &> /dev/null
 
-# Ask for MySQL root password if not already defined
+# Ask for MariaDB root password if not already defined
 if [[ -z ${MARIADB_ROOT_PW+x} ]]; then
-  read -s -p "    Enter your MySQL root password: " MARIADB_ROOT_PW
+  read -s -p "    Enter your MariaDB root password: " MARIADB_ROOT_PW
   echo
 fi
 
-output_new message $? "Verifying MySQL credentials"
+output_new message $? "Verifying MariaDB credentials"
 
 echo "SHOW DATABASES" | mysql --user=root --password=${MARIADB_ROOT_PW} -NB 2> /dev/null | grep -x "mysql" &> /dev/null
 
@@ -86,8 +86,8 @@ if [[ ! -z $(echo "SELECT SCHEMA_NAME FROM INFORMATION_SCHEMA.SCHEMATA WHERE SCH
   output_new message $? "Dropping database ${SITE_NAME}"
   echo "DROP DATABASE IF EXISTS ${SITE_NAME}" | mysql --user=root --password=${MARIADB_ROOT_PW} &> /dev/null
 
-  output_new message $? "Deleting user ${MYSQL_USERNAME}"
-  echo "DROP USER IF EXISTS '${MYSQL_USERNAME}'@'localhost';" | mysql --user=root --password=${MARIADB_ROOT_PW} &> /dev/null
+  output_new message $? "Deleting user ${MARIADB_USERNAME}"
+  echo "DROP USER IF EXISTS '${MARIADB_USERNAME}'@'localhost';" | mysql --user=root --password=${MARIADB_ROOT_PW} &> /dev/null
 
   output_new message $? "Flushing privileges"
   echo "FLUSH PRIVILEGES" | mysql --user=root --password=${MARIADB_ROOT_PW} &> /dev/null
@@ -99,11 +99,11 @@ echo "CREATE DATABASE ${SITE_NAME}" | mysql --user=root --password=${MARIADB_ROO
 
 output_new message $? "Creating non-root user"
 
-echo "CREATE USER '${MYSQL_USERNAME}'@'localhost' IDENTIFIED BY '${MYSQL_PASSWORD}'" | mysql --user=root --password=$MARIADB_ROOT_PW &> /dev/null
+echo "CREATE USER '${MARIADB_USERNAME}'@'localhost' IDENTIFIED BY '${MARIADB_PASSWORD}'" | mysql --user=root --password=$MARIADB_ROOT_PW &> /dev/null
 
 output_new message $? "Granting privileges"
 
-echo "GRANT ALL ON ${SITE_NAME}.* TO '${MYSQL_USERNAME}'@'localhost'" | mysql --user=root --password=${MARIADB_ROOT_PW} &> /dev/null
+echo "GRANT ALL ON ${SITE_NAME}.* TO '${MARIADB_USERNAME}'@'localhost'" | mysql --user=root --password=${MARIADB_ROOT_PW} &> /dev/null
 
 output_new message $? "Flushing privileges"
 
@@ -128,7 +128,7 @@ wp core verify-checksums &> /dev/null
 output_new message $? "Configuring wp-config.php"
 
 # Add constants for logging and debugging
-wp core config --dbname=${SITE_NAME} --dbuser=${MYSQL_USERNAME} --dbpass=${MYSQL_PASSWORD} --extra-php &> /dev/null <<PHP
+wp core config --dbname=${SITE_NAME} --dbuser=${MARIADB_USERNAME} --dbpass=${MARIADB_PASSWORD} --extra-php &> /dev/null <<PHP
 define( 'WP_DEBUG', true );
 if ( WP_DEBUG ) {
 	@error_reporting( E_ALL );
