@@ -70,44 +70,44 @@ output_new message $? "MariaDB is running"
 mysql.server start &> /dev/null
 
 # Ask for MySQL root password if not already defined
-if [[ -z ${MYSQL_ROOT_PW+x} ]]; then
-  read -s -p "    Enter your MySQL root password: " MYSQL_ROOT_PW
+if [[ -z ${MARIADB_ROOT_PW+x} ]]; then
+  read -s -p "    Enter your MySQL root password: " MARIADB_ROOT_PW
   echo
 fi
 
 output_new message $? "Verifying MySQL credentials"
 
-echo "SHOW DATABASES" | mysql --user=root --password=${MYSQL_ROOT_PW} -NB 2> /dev/null | grep -x "mysql" &> /dev/null
+echo "SHOW DATABASES" | mysql --user=root --password=${MARIADB_ROOT_PW} -NB 2> /dev/null | grep -x "mysql" &> /dev/null
 
 output_new message $? "Checking for existing database"
 
 # Drop database and user if they exist
-if [[ ! -z $(echo "SELECT SCHEMA_NAME FROM INFORMATION_SCHEMA.SCHEMATA WHERE SCHEMA_NAME = '${SITE_NAME}'" | mysql -N --user=root --password=${MYSQL_ROOT_PW}) ]]; then
+if [[ ! -z $(echo "SELECT SCHEMA_NAME FROM INFORMATION_SCHEMA.SCHEMATA WHERE SCHEMA_NAME = '${SITE_NAME}'" | mysql -N --user=root --password=${MARIADB_ROOT_PW}) ]]; then
   output_new message $? "Dropping database ${SITE_NAME}"
-  echo "DROP DATABASE IF EXISTS ${SITE_NAME}" | mysql --user=root --password=${MYSQL_ROOT_PW} &> /dev/null
+  echo "DROP DATABASE IF EXISTS ${SITE_NAME}" | mysql --user=root --password=${MARIADB_ROOT_PW} &> /dev/null
 
   output_new message $? "Deleting user ${MYSQL_USERNAME}"
-  echo "DROP USER IF EXISTS '${MYSQL_USERNAME}'@'localhost';" | mysql --user=root --password=${MYSQL_ROOT_PW} &> /dev/null
+  echo "DROP USER IF EXISTS '${MYSQL_USERNAME}'@'localhost';" | mysql --user=root --password=${MARIADB_ROOT_PW} &> /dev/null
 
   output_new message $? "Flushing privileges"
-  echo "FLUSH PRIVILEGES" | mysql --user=root --password=${MYSQL_ROOT_PW} &> /dev/null
+  echo "FLUSH PRIVILEGES" | mysql --user=root --password=${MARIADB_ROOT_PW} &> /dev/null
 fi
 
 output_new message $? "Creating new database"
 
-echo "CREATE DATABASE ${SITE_NAME}" | mysql --user=root --password=${MYSQL_ROOT_PW} &> /dev/null
+echo "CREATE DATABASE ${SITE_NAME}" | mysql --user=root --password=${MARIADB_ROOT_PW} &> /dev/null
 
 output_new message $? "Creating non-root user"
 
-echo "CREATE USER '${MYSQL_USERNAME}'@'localhost' IDENTIFIED BY '${MYSQL_PASSWORD}'" | mysql --user=root --password=$MYSQL_ROOT_PW &> /dev/null
+echo "CREATE USER '${MYSQL_USERNAME}'@'localhost' IDENTIFIED BY '${MYSQL_PASSWORD}'" | mysql --user=root --password=$MARIADB_ROOT_PW &> /dev/null
 
 output_new message $? "Granting privileges"
 
-echo "GRANT ALL ON ${SITE_NAME}.* TO '${MYSQL_USERNAME}'@'localhost'" | mysql --user=root --password=${MYSQL_ROOT_PW} &> /dev/null
+echo "GRANT ALL ON ${SITE_NAME}.* TO '${MYSQL_USERNAME}'@'localhost'" | mysql --user=root --password=${MARIADB_ROOT_PW} &> /dev/null
 
 output_new message $? "Flushing privileges"
 
-echo "FLUSH PRIVILEGES" | mysql --user=root --password=${MYSQL_ROOT_PW} &> /dev/null
+echo "FLUSH PRIVILEGES" | mysql --user=root --password=${MARIADB_ROOT_PW} &> /dev/null
 
 #####################################
 output_new section $? "Installing WordPress"
