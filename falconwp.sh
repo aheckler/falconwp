@@ -69,9 +69,11 @@ output_new message $? "MariaDB is running"
 
 mysql.server start &> /dev/null
 
-# Prompt for MySQL root password
-read -s -p "    Enter your MySQL root password: " MYSQL_ROOT_PW
-echo
+# Ask for MySQL root password if not already defined
+if [[ -z ${MYSQL_ROOT_PW+x} ]]; then
+  read -s -p "    Enter your MySQL root password: " MYSQL_ROOT_PW
+  echo
+fi
 
 output_new message $? "Verifying MySQL credentials"
 
